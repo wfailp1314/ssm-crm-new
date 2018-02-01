@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.FwqMapper">
+
+	<resultMap type="com.crm.model.Fwq" id="fwqResultMap">
+		<id column="id" property="id"/>
+		<result column="ipdz" property="ipdz"/>
+		<result column="port" property="port"/>
+		<result column="flag" property="flag"/>
+	</resultMap>
+
+
+   <select id="getDatagridTotal" resultType="long">
+		select 
+			count(1) 
+		from fwq  where 1=1
+		<if test="ipdz != null and ipdz != ''">
+            and ipdz like concat('%',#{ipdz},'%')
+        </if>
+        <if test="port != null and port != '' and port != -1">
+            and port like concat('%',#{port},'%')
+        </if>
+          <if test="flag != null and flag != '' and flag != -1">
+            and flag =#{flag}
+          </if>
+	</select>
+	
+	
+		<select id="datagridFwq" resultType="com.crm.model.Fwq">
+		select * from fwq t where 1=1
+		
+		<if test="param2!=null">
+		<if test="param2.ipdz != null and param2.ipdz != ''">
+            and ipdz like concat('%',#{param2.ipdz},'%')
+        </if>
+        <if test="param2.port != null and param2.port != '' ">
+            and port like concat('%',#{param2.port},'%')
+        </if>
+          <if test="param2.flag != null and param2.flag != ''">
+            and flag =#{param2.flag}
+          </if>
+		
+		</if>
+		
+		
+		
+		<if test="param1.sort != null and param1.sort != ''">
+            order by #{param1.sort} #{param1.order}
+        </if>
+        <if test="param1.page > 0">
+            limit #{param1.start},#{param1.end}
+        </if>
+	</select>
+	
+	
+	<update id="updateFwq" >
+    	update fwq
+    	 set flag=#{flag}
+    	where ipdz = #{ipdz}
+    </update>
+    
+    
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+		insert into fwq(<trim suffixOverrides=",">
+            <if test="ipdz !=null and ipdz !=''">ipdz,</if>
+            <if test="port !=null and port !=''">port,</if>
+                 flag
+            </trim>)values(<trim suffixOverrides=",">
+            <if test="ipdz !=null and ipdz !=''">#{ipdz},</if>
+            <if test="port !=null and port !=''">#{port},</if>
+             0
+            </trim>)
+	</insert>
+	
+	
+	 <update id="edit">
+    	update fwq
+    	<set>
+    		<if test="ipdz !=null and ipdz !=''">ipdz=#{ipdz},</if>
+            <if test="port !=null and port !=''">port=#{port}</if>
+        </set>
+    	where id = #{id}
+    </update>
+	
+	   <delete id="deleteFwq" parameterType="int">
+		delete from fwq where id=#{id}
+	</delete>
+	
+</mapper>
